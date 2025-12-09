@@ -62,8 +62,7 @@ if (!defined $server) {
 }
 
 if (!defined $file) {
-  say "Please enter a file or directory!";
-  exit 1;
+  die "Please enter a file or directory!\n";
 }
 
 my $user = 'peachie';
@@ -73,8 +72,7 @@ my $localpath = "$localdir/$file";
 my $serverpath = "$serverdir/$file";
 
 if ($direction eq "push" && !-e $localpath) {
-  say "$localpath does not exist, please enter a valid file or directory!";
-  exit -1
+  die "$localpath does not exist, please enter a valid file or directory!\n";
 }
 
 my $command = 'sudo rsync -avz';
