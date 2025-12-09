@@ -45,7 +45,7 @@ if ($git) {
     chdir("$home/$repo") or die "Cannot change directory: $!\n";
     say "(づ*ᴗ͈ˬᴗ͈)づ*.ﾟ✿ Pushing latest changes to Github";
     system("git add .");
-    system("git commit -m 'Sync'");
+    system("git commit -m 'Backup from Perl script'");
     system("git push");
   }
 }
