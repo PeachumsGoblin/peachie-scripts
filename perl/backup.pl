@@ -61,11 +61,11 @@ if ($usb) {
   say "ヽ(*・ω・)ﾉ Commencing USB backup~!";
   foreach my $dir (@homerepos) {
     say "(づ*ᴗ͈ˬᴗ͈)づ*.ﾟ✿ Syncing $dir to USB";
-    system("sudo rsync -avz $home/$dir /mnt/thumb/$dir");
+    system("sudo rsync -avz $home/$dir /mnt/thumb/home-backup/$dir");
   };
   foreach my $dir (@localdirs) {
     say "(づ*ᴗ͈ˬᴗ͈)づ*.ﾟ✿ Syncing $dir to USB";
-    system("echo sudo rsync -avz $home/$dir /mnt/thumb/$dir");
+    system("echo sudo rsync -avz $dir /mnt/thumb/other-backup/$dir");
   };
 }
 

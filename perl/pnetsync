@@ -64,34 +64,34 @@ if (!defined $file) {
 }
 
 my $user = 'peachie';
-my $localdir = "/home/peachie/Server/$server";
-my $serverdir = "/home/peachie/Server";
-my $localpath = "$localdir/$file";
-my $serverpath = "$serverdir/$file";
+my $base_dir = "/home/peachie/Server";
+my $extended_dir = "$base_dir/$server";
+my $base_path = "$base_dir/$file";
+my $extended_path = "$extended_dir/$file";
 
-if ($direction eq "push" && !-e $localpath) {
-  die "$localpath does not exist, please enter a valid file or directory!\n";
+if ($direction eq "push" && !-e $extended_path) {
+  die "extended_path does not exist, please enter a valid file or directory!\n";
 }
 
 my $command = 'sudo rsync -avz';
-my $filter = "--filter=':- $serverdir/.gitignore'";
-my @give = ("$localpath", "$user\@$server:$serverpath");
-my @givedir = ("$localpath/", "$user\@$server:$serverpath/");
+my $filter = "--filter=':- $base_dir/.gitignore'";
+my @give = ("$extended_path", "$user\@$server:$base_path");
+my @givedir = ("$extended_path/", "$user\@$server:$base_path/");
 my @take = reverse @give;
 my @takedir = reverse @givedir;
 
 
-if ($direction eq "push" && !-d $localpath) {
-  say "Syncing file $localpath to $server";
+if ($direction eq "push" && !-d $extended_path) {
+  say "Syncing file $extended_path to $server";
   system("$command @give");
-} elsif ($direction eq "push" && -d $localpath) {
-  say "Syncing directory $localpath/ to $server";
+} elsif ($direction eq "push" && -d $extended_path) {
+  say "Syncing directory $extended_path/ to $server";
   system("$command $filter @givedir");
-} if ($direction eq "pull" && !-d $localpath) {
-  say "Syncing file $serverpath from $server";
+} if ($direction eq "pull" && !-d $extended_path) {
+  say "Syncing file $base_path from $server";
   system("$command @take");
-} elsif ($direction eq "pull" && -d $localpath) {
-  say "Syncing directory $serverpath/ from $server";
+} elsif ($direction eq "pull" && -d $extended_path) {
+  say "Syncing directory $base_path/ from $server";
   system("$command $filter @takedir");
 }
 

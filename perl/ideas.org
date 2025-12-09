@@ -5,3 +5,7 @@
 ~/Scripts/
 ~/Server/
 ~/Shared/
+
+- To Github
+- To USB
+- To Server
