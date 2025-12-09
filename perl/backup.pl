@@ -40,9 +40,9 @@ if ($help) {
 
 if ($git) {
   foreach my $repo (@repos) {
-    say "Changing working directory to $repo";
+    say "☆⸜(｡˃ ᵕ ˂ )⸝☆ Changing working directory to $repo";
     chdir("$home/$repo") or die "Cannot change directory: $!\n";
-    say "Pushing latest changes to Github";
+    say "☆⸜(｡˃ ᵕ ˂ )⸝☆ Pushing latest changes to Github";
     system("git add .");
     system("git commit -m 'Sync'");
     system("git push");
