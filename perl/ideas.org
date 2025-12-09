@@ -1,0 +1,7 @@
+* Perl Scratchpad
+
+~/.dotfiles/
+~/Documents/
+~/Scripts/
+~/Server/
+~/Shared/
