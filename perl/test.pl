@@ -1,0 +1,114 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use feature 'say';
+use Getopt::Long qw(GetOptions);
+
+=head1 NAME
+
+pnetsync - Sync files and directories between local machine and PeachieNET server(s)
+
+=head1 SYNOPSIS
+
+pnetsync [--direction|-d <push|pull>] [--server|-s <hostname>] [--file|-f<filename>] [--help|-h]
+
+=head1 DESCRIPTION
+
+Executes rsync in either direction between local machine and remote server. Specify direction of transfer (push or pull), server hostname, and file/directory name.
+
+=head1 AUTHOR
+
+Peachie Joyce <peachumsgoblin\@pm.me>
+
+=cut
+
+my $direction;
+my $server;
+my $file;
+my $help;
+
+GetOptions(
+           "direction|d=s" => \$direction,
+           "server|s=s" => \$server,
+           "file|f=s" => \$file,
+           "help|h"  => \$help,
+          ) or die "Usage: pnetsync [--direction|-d <push|pull>] [--server|-s <hostname>] [--file|-f<filename>] [--help|-h]\n";
+
+if ($help) {
+  say "Usage: pnetsync [--direction|-d <push|pull>] [--server|-s <hostname>] [--file|-f<filename>] [--help|-h]";
+  exit 0
+}
+
+if (!defined $direction) {
+  say "Please enter a valid direction to sync the files!";
+}
+  elsif ($direction eq "push") {
+  say(qq(Selected direction "push"));
+} elsif ($direction eq "pull") {
+  say(qq(Selected direction "pull"));
+} else {
+  say "Please enter a valid direction to sync the files!";
+}
+
+if (!defined $server) {
+  say "Please enter a valid server!";
+}
+  elsif ($server eq "chumbox") {
+  say(qq(Selected server "chumbox"));
+} elsif ($server eq "peachpi") {
+  say(qq(Selected direction "peachpi"));
+} else {
+  say "Please enter a valid server!";
+}
+
+if (!defined $file) {
+  say "Please enter a file or directory!";
+  exit 1;
+}
+
+my $user = 'peachie';
+my $localdir = "/home/peachie/Server/$server";
+my $serverdir = "/home/peachie/Server";
+my $localpath = "$localdir/$file";
+my $serverpath = "$serverdir/$file";
+
+if ($direction eq "push" && !-e $localpath) {
+  say "$localpath does not exist, please enter a valid file or directory!";
+  exit -1
+}
+
+my $command = 'sudo rsync -avz';
+my $filter = "--filter=':- $serverdir/.gitignore'";
+my @give = ("$localpath", "$user\@$server:$serverpath");
+my @givedir = ("$localpath/", "$user\@$server:$serverpath/");
+my @take = reverse @give;
+my @takedir = reverse @givedir;
+
+
+if ($direction eq "push" && !-d $localpath) {
+  say "Syncing file $localpath to $server";
+  system("$command @give");
+} elsif ($direction eq "push" && -d $localpath) {
+  say "Syncing directory $localpath/ to $server";
+  system("$command $filter @givedir");
+} if ($direction eq "pull" && !-d $localpath) {
+  say "Syncing file $serverpath from $server";
+  system("$command @take");
+} elsif ($direction eq "pull" && -d $localpath) {
+  say "Syncing directory $serverpath/ from $server";
+  system("$command $filter @takedir");
+}
+
+if ($? == 0) {
+  say "Sync completed successfully.";
+}
+elsif ($? == -1) {
+    print "failed to execute: $!\n";
+}
+elsif ($? & 127) {
+    printf "died with signal %d, %s coredump\n",
+        ($? & 127),  ($? & 128) ? 'with' : 'without';
+}
+else {
+    printf "exited with value %d\n", $? >> 8;
+}

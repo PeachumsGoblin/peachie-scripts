@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# sudo rsync -avz --filter=':- .gitignore' /home/peachie/Server/ peachie@chumbox:/home/peachie/Server
+
+my $local_dir = '/home/peachie/Server';
+my $server_dir = 'peachie@chumbox:/home/peachie/Server/';
+my @args = ('sudo', 'rsync', '-avz', "--filter=':- .gitignore'", $local_dir, $server_dir);
+
+print "";
+
+system(@args)
