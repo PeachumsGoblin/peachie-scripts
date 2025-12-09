@@ -1,4 +1,0 @@
-#+title: Perl Script Plan
-
-sudo rsync -avz --filter=':- .gitignore' /home/peachie/Server/
-peachie@chumbox:/home/peachie/Server 
