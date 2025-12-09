@@ -39,6 +39,7 @@ if ($help) {
 };
 
 if ($git) {
+  say "ヽ(*・ω・)ﾉ Commencing Github backup~!";
   foreach my $repo (@repos) {
     say "(づ*ᴗ͈ˬᴗ͈)づ*.ﾟ✿ Changing working directory to $repo";
     chdir("$home/$repo") or die "Cannot change directory: $!\n";
