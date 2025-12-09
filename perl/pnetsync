@@ -41,8 +41,7 @@ if ($help) {
 
 if (!defined $direction) {
   say "Please enter a valid direction to sync the files!";
-}
-  elsif ($direction eq "push") {
+} elsif ($direction eq "push") {
   say(qq(Selected direction "push"));
 } elsif ($direction eq "pull") {
   say(qq(Selected direction "pull"));
@@ -52,8 +51,7 @@ if (!defined $direction) {
 
 if (!defined $server) {
   say "Please enter a valid server!";
-}
-  elsif ($server eq "chumbox") {
+} elsif ($server eq "chumbox") {
   say(qq(Selected server "chumbox"));
 } elsif ($server eq "peachpi") {
   say(qq(Selected direction "peachpi"));
@@ -99,14 +97,11 @@ if ($direction eq "push" && !-d $localpath) {
 
 if ($? == 0) {
   say "Sync completed successfully.";
-}
-elsif ($? == -1) {
+} elsif ($? == -1) {
     print "failed to execute: $!\n";
-}
-elsif ($? & 127) {
+} elsif ($? & 127) {
     printf "died with signal %d, %s coredump\n",
         ($? & 127),  ($? & 128) ? 'with' : 'without';
-}
-else {
+} else {
     printf "exited with value %d\n", $? >> 8;
 }
