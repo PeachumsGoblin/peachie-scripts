@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use feature 'say';
+use Term::ANSIColor;
+use Getopt::Long qw(GetOptions);
+Getopt::Long::Configure qw(gnu_getopt);
+
+
+my $user = "$ENV{USER}";
+my $home = "$ENV{HOME}";
+my $host = `hostname`;
+chomp $host;
+
+my $git;
+my $usb;
+my $qnap;
+my $check;
+my $print;
+my $help;
+my $key;
+my $value;
+
+GetOptions (
+            "usb|u" => \$usb,
+            "qnap|q" => \$qnap,
+            "git|g" => \$git,
+            "check|c" => \$check,
+            "print|p" => \$print,
+            "help|h" => \$help,
+            ) or die "Dead.\n";
+
+my @repos = (
+             ".dotfiles/",
+             "Documents/",
+             "Scripts/",
+             "Server/",
+             "Shared/",
+             );
+
+my %drive_info;
+
+sub assign_backup_drive {
+  if (defined $usb) {
+    %drive_info = (
+                   "drive_type" => "USB",
+                   "friendly_name" => "Sandisk USB Thumbstick",
+                   "drive_id" => "UUID=8a135c35-a49c-4c50-9895-6942d1e09753",
+                   "filesystem_type" => "ext4",
+                   "mount_directory" => "/mnt/thumb",
+                  );
+  } elsif (defined $qnap) {
+    %drive_info = (
+                   "drive_type" => "QNAP",
+                   "friendly_name" => "QNAP NAS",
+                   "drive_id" => undef,
+                   "filesystem_type" => "nfs",
+                   "mount_directory" => "/mnt/QNAP",
+                  );
+  } else {
+    say "Please choose a valid backup drive."
+  };
+}
+
+
+sub print_drive_info {
+  foreach my $key (sort keys %drive_info) {
+    my $value = $drive_info{$key};
+    if (defined $value)  {
+      say "\t ", color('magenta'), "$key: ", color('cyan'), "$value", color('reset');
+    } else {
+      say color('yellow'), "\t $key: value is undefined", color('reset');
+    };
+  };
+}
+
+sub check_drive_mount {
+  if ($drive_info{filesystem_type} eq "nfs") {
+    say " Checking NFS Share...";
+    system("cat /proc/mounts | grep nfs | grep $drive_info{drive_type} > /dev/null 2>&1");
+    if ($? == 0) {
+      say color('bold green'), " $drive_info{friendly_name} found";
+    } else {
+      die color('bold red'), " $drive_info{friendly_name} not found. Check NFS share mounts.\n";
+    };
+  } else {
+    say " Checking mountpoint...";
+    system("findmnt --source $drive_info{drive_id} > /dev/null 2>&1");
+    if ($? == 0) {
+      say color('bold green'), " $drive_info{friendly_name} found";
+    } else {
+      print " $drive_info{friendly_name} not found. Attempting to mount...\n";
+      system("sudo mount $drive_info{drive_id} $drive_info{mount_directory} > /dev/null 2>&1");
+      if ($? == 0) {
+        print " Mount succeeded. $drive_info{friendly_name} is now mounted at $drive_info{mount_directory}\n"
+      } else {
+        die color('bold red'), " Could not mount $drive_info{friendly_name}. Check drive connection.\n";
+      };
+    };
+  };
+}
+
+sub test {
+  &assign_backup_drive;
+  say color('green'), " $drive_info{drive_type} drive selected", color('reset');
+  if ($check) {
+    &print_drive_info;
+    &check_drive_mount;
+  }
+}
+
+if (!defined $usb && !defined $qnap) {
+  die "Dead.\n"
+} elsif ($usb || $qnap) {
+  &test;
+}

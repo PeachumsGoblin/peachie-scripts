@@ -1,0 +1,34 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+# TODO: Help.
+# TODO: Make sync dirs a shell variable and read from it.
+
+my $Documents = "Documents";
+chomp(my $host = `uname`);
+if ($host eq 'Darwin') {
+  $Documents = "Notes";
+}
+
+print "Using '$Documents' as \$Documents directory.\n";
+
+my @sync_dirs = ("$ENV{HOME}/Shared",
+		 "$ENV{HOME}/Scripts",
+                 "$ENV{HOME}/.dotfiles",
+                 "$ENV{HOME}" . '/.dotfiles/emacs/.config/emacs/my-lib',
+                 "$ENV{HOME}/$Documents");
+
+for (@sync_dirs) {
+  print "Syncing $_... ";
+  system 'git', '-C', "$_", 'pull';
+}
+
+#my $unused = `pass`;
+#if (0) {
+#  print '`pass` detected.  Pulling... ';
+#  system 'pass', 'git', 'pull';
+#  print 'And pushing... ';
+#  system 'pass', 'git', 'push';
+#}

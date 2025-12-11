@@ -1,0 +1,28 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use feature qw(say);
+
+my $filename = "$ENV{HOME}" . '/Scripts/perl/cpan.yaml';
+if (scalar @ARGV > 1) {
+    $filename = shift @ARGV
+}
+
+if (!-e $filename) {
+    say "CPAN YAML file with name '$filename' does not exist.";
+    exit 1;
+}
+
+my @packages = ();
+open(my $fh, '<', "$filename");
+while (<$fh>) {
+    s/^-\s*(.*)\s*$/$1/;
+    push @packages, $_;
+}
+close $fh;
+
+my $cmd = 'install';
+for (@packages) {
+    system "cpan $cmd $_";
+}
