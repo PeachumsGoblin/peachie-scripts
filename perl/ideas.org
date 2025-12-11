@@ -7,5 +7,16 @@
 ~/Shared/
 
 - To Github
+  - Check git status
+    - Print all git statuses, then if any return dirty, die
+  - Add, commit and push
 - To USB
+  - Check if USB is mounted (or die)
+  - Check if folders exist
+    - If not, make folders
+  - Copy folders over
 - To Server
+  - Check if NFS is mounted (or die)
+  - Check if folders exist
+    - If not, make folders
+  - Copy folders over
