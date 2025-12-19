@@ -6,6 +6,7 @@ use Term::ANSIColor;
 use Getopt::Long qw(GetOptions);
 Getopt::Long::Configure qw(gnu_getopt);
 
+my $test_number = 0;
 
 
 
