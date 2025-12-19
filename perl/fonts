@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use List::MoreUtils ("uniq");
+
+if (grep /^-h$|^--help$/, @ARGV) {
+    print <<EOF;
+NAME
+       fonts - list fonts in a formatted way
+
+SYNOPSIS
+       fonts
+       fonts [-h|--help]
+
+DESCRIPTION
+       Lists the fonts provided by `fc-list' but without the repeated
+       variations (e.g. Italic, Bold, Medium, Thin) and without large
+       libraries (e.g. Noto).
+
+       -h, --help
+              show help information and exit
+
+AUTHOR
+       Soro Skunk <soro.skunk\@gmail.com>.
+EOF
+    exit 0;
+}
+
+my @all_fonts = `fc-list`;
+my @filtered =
+    grep((!/-.*Black|-.*Bold|-.*Book|-.*Condensed|-.*Demi|-.*Extended|
+            -.*Heavy|-.*Italic|-.*Light|-.*Medium|-.*Noto|-.*Oblique|
+            -.*Propo|-.*Retina|-.*Roman|-.*Semi|-.*Text|-.*Thin/ix),
+         @all_fonts);
+
+for (@filtered) {
+    # Extract the name from the font.  Entries look like:
+    # /usr/share/fonts/fontName/Font Name.ttf: Font Name:style=Regular
+    # Matches the segment between the last / and the extension type.
+    s/.*\/(.*)\..*: .*/$1/;
+    s/-Regular//;
+    #s/FontMono$//;
+    #s/Font$//;
+}
+
+print uniq sort @filtered;

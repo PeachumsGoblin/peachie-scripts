@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $msg = join(' ', @ARGV);
+my @cmds = (['git', 'add', '--all'],
+            ['git', 'commit', "-m$msg"],
+            ['git', 'push']);
+
+for (@cmds) {
+    system @{$_};
+}

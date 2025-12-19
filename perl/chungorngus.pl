@@ -6,16 +6,17 @@ use Term::ANSIColor;
 use Getopt::Long qw(GetOptions);
 Getopt::Long::Configure qw(gnu_getopt);
 
+<<<<<<< HEAD
 my $test_number = 0;
 
 
 
+=======
+>>>>>>> c5afc26236388b758eacdb9a27cd125b9fc09cdd
 my $maggie = "Uni Propus";
 my $maisie = "Sunstar Ninipie";
 my @cats = ($maggie, $maisie);
 my $cat;
-
-
 
 sub yes_or_no {
     my ($query) = @_;
